@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// SetupRoutes sets up the routes for the application using chi router
 func SetupRoutes(app *app.Application) *chi.Mux {
 	r := chi.NewRouter()
 

@@ -21,6 +21,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer app.DB.Close()
 	// sets up the routes using the chi router and the application instance
 	r := routes.SetupRoutes(app)
 	// configures and starts the HTTP server with specified timeouts

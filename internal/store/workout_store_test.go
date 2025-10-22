@@ -10,7 +10,7 @@ import (
 )
 
 func setupTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("pgx", "host=localhost port=5433 user=postgres password=postgres dbname=test_postgres sslmode=disable")
+	db, err := sql.Open("pgx", "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable")
 	if err != nil {
 		t.Fatalf("Failed to connect to test database: %v", err)
 	}

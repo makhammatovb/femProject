@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	_"github.com/ydb-platform/ydb-go-sdk/v3/query"
+	_ "github.com/ydb-platform/ydb-go-sdk/v3/query"
 )
 
 type Workout struct {
@@ -15,21 +15,21 @@ type Workout struct {
 	DurationMinutes int            `json:"duration_minutes"`
 	CaloriesBurned  int            `json:"calories_burned"`
 	Entries         []WorkoutEntry `json:"entries"`
-	CreatedAt       time.Time         `json:"created_at"`
-	UpdatedAt       time.Time         `json:"updated_at"`
+	CreatedAt       time.Time      `json:"created_at"`
+	UpdatedAt       time.Time      `json:"updated_at"`
 }
 
 type WorkoutEntry struct {
-	ID              int      `json:"id"`
-	ExerciseName    string   `json:"exercise_name"`
-	Reps            *int     `json:"reps"`
-	Sets            int      `json:"sets"`
-	Weight          *float64 `json:"weight"`
-	DurationSeconds *int     `json:"duration_seconds"`
-	Notes           string   `json:"notes"`
-	CreatedAt       time.Time   `json:"created_at"`
-	UpdatedAt       time.Time   `json:"updated_at"`
-	OrderIndex      int      `json:"order_index"`
+	ID              int       `json:"id"`
+	ExerciseName    string    `json:"exercise_name"`
+	Reps            *int      `json:"reps"`
+	Sets            int       `json:"sets"`
+	Weight          *float64  `json:"weight"`
+	DurationSeconds *int      `json:"duration_seconds"`
+	Notes           string    `json:"notes"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
+	OrderIndex      int       `json:"order_index"`
 }
 
 type PostgresWorkoutStore struct {
@@ -54,8 +54,8 @@ func (pg *PostgresWorkoutStore) CreateWorkout(workout *Workout) (*Workout, error
 	}
 	defer tx.Rollback()
 
-	query := 
-	`INSERT INTO workouts (title, description, duration_minutes, calories_burned)
+	query :=
+		`INSERT INTO workouts (title, description, duration_minutes, calories_burned)
 	VALUES ($1, $2, $3, $4) RETURNING id;
 	`
 	err = tx.QueryRow(query, workout.Title, workout.Description, workout.DurationMinutes, workout.CaloriesBurned).Scan(&workout.ID)
@@ -64,8 +64,8 @@ func (pg *PostgresWorkoutStore) CreateWorkout(workout *Workout) (*Workout, error
 	}
 	for i, entry := range workout.Entries {
 		fmt.Printf("DEBUG: Inserting entry %d: %+v\n", i, entry)
-		query := 
-		`INSERT INTO workout_entries (workout_id, exercise_name, reps, sets, weight, duration_seconds, notes, order_index)
+		query :=
+			`INSERT INTO workout_entries (workout_id, exercise_name, reps, sets, weight, duration_seconds, notes, order_index)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id;
 		`
 		err = tx.QueryRow(query, workout.ID, entry.ExerciseName, entry.Reps, entry.Sets, entry.Weight, entry.DurationSeconds, entry.Notes, entry.OrderIndex).Scan(&entry.ID)
@@ -142,9 +142,9 @@ func (pg *PostgresWorkoutStore) UpdateWorkout(workout *Workout) error {
 	if err != nil {
 		return err
 	}
-	for _, entry :=  range workout.Entries {
-		query := 
-		`INSERT INTO workout_entries (workout_id, exercise_name, reps, sets, weight, duration_seconds, notes, order_index)
+	for _, entry := range workout.Entries {
+		query :=
+			`INSERT INTO workout_entries (workout_id, exercise_name, reps, sets, weight, duration_seconds, notes, order_index)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
 		`
 		_, err := tx.Exec(query, workout.ID, entry.ExerciseName, entry.Reps, entry.Sets, entry.Weight, entry.DurationSeconds, entry.Notes, entry.OrderIndex)
@@ -154,7 +154,6 @@ func (pg *PostgresWorkoutStore) UpdateWorkout(workout *Workout) error {
 	}
 	return tx.Commit()
 }
-
 
 func (pg *PostgresWorkoutStore) DeleteWorkout(id int64) error {
 	query := `
